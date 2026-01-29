@@ -133,6 +133,23 @@ export default function FxCalculator({
     return formatTrimmedNumber(next)
   }, [amount, fromCurrency, toCurrency, normalizedRates])
 
+  const trioRates = useMemo(() => {
+    if (!normalizedRates) return []
+    const value = Number(amount)
+    if (!Number.isFinite(value)) return []
+    const fromRate = normalizedRates[fromCurrency]
+    if (!fromRate) return []
+    const baseValue = value / fromRate
+    return ['KRW', 'USD', 'CNY'].map((currency) => {
+      const rate = normalizedRates[currency]
+      if (!rate) {
+        return { currency, value: 'N/A' }
+      }
+      const next = baseValue * rate
+      return { currency, value: formatTrimmedNumber(next) }
+    })
+  }, [amount, fromCurrency, normalizedRates])
+
   const handleSwap = () => {
     setFromCurrency(toCurrency)
     setToCurrency(fromCurrency)
@@ -216,6 +233,14 @@ export default function FxCalculator({
         <div className="fx-output">
           <div className="fx-value">{converted}</div>
           <div className="fx-meta">1 {fromCurrency} 기준 환율</div>
+          <div className="fx-rate-list">
+            {trioRates.map((row) => (
+              <div key={row.currency} className="fx-rate-row">
+                <span>{row.currency}</span>
+                <span>{row.value}</span>
+              </div>
+            ))}
+          </div>
         </div>
         <button type="button" className="primary" onClick={handleSave}>
           기록 저장

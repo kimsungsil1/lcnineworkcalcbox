@@ -367,6 +367,18 @@
   margin-top: 6px;
 }
 
+.fx-rate-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.fx-rate-row {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
 .unit-grid .swap {
   justify-self: start;
   padding: 8px 12px;
