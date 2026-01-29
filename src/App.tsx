@@ -6,6 +6,7 @@ import PercentCalculator from './features/percent-calculator/PercentCalculator'
 import DateCalculator from './features/date-calculator/DateCalculator'
 import UnitConverter from './features/unit-converter/UnitConverter'
 import FxCalculator from './features/fx-calculator/FxCalculator'
+import PlatformFeeCalculator from './features/platform-fee/PlatformFeeCalculator'
 import HistoryPanel from './features/history/HistoryPanel'
 import { useHistory } from './features/history/useHistory'
 import type { HistoryItem } from './features/history/types'
@@ -16,6 +17,7 @@ const TABS = [
   { id: 'date', label: '날짜' },
   { id: 'unit', label: '단위 변환' },
   { id: 'fx', label: '환율' },
+  { id: 'platform', label: '플랫폼 수수료' },
   { id: 'history', label: '기록' },
 ] as const
 
@@ -83,6 +85,9 @@ export default function App() {
           {activeTab === 'unit' && <UnitConverter {...toolProps} />}
           {activeTab === 'fx' && (
             <FxCalculator user={user} {...toolProps} />
+          )}
+          {activeTab === 'platform' && (
+            <PlatformFeeCalculator {...toolProps} />
           )}
           {activeTab === 'history' && (
             <HistoryPanel

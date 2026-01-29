@@ -8,6 +8,7 @@ const TYPE_LABELS: Record<HistoryType, string> = {
   date: '날짜',
   unit: '단위 변환',
   fx: '환율',
+  platform: '플랫폼 수수료',
 }
 
 const FILTERS: Array<{ value: 'all' | HistoryType; label: string }> = [
@@ -17,6 +18,7 @@ const FILTERS: Array<{ value: 'all' | HistoryType; label: string }> = [
   { value: 'date', label: '날짜' },
   { value: 'unit', label: '단위' },
   { value: 'fx', label: '환율' },
+  { value: 'platform', label: '플랫폼' },
 ]
 
 type HistoryPanelProps = {

@@ -1,6 +1,6 @@
 import type { Timestamp } from 'firebase/firestore'
 
-export type HistoryType = 'basic' | 'percent' | 'date' | 'unit' | 'fx'
+export type HistoryType = 'basic' | 'percent' | 'date' | 'unit' | 'fx' | 'platform'
 
 export type HistoryOutput = {
   summary: string
