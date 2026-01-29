@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
+import type { Firestore } from 'firebase/firestore'
 import type { User } from 'firebase/auth'
 import type { HistoryItem, HistoryWriteInput } from '../history/types'
 import { db } from '../../shared/firebase/firebase'
@@ -26,6 +27,7 @@ export default function FxCalculator({
   onAddHistory,
   selectedHistory,
 }: FxCalculatorProps) {
+  const dbRef = isFirestore(db) ? db : null
   const [amount, setAmount] = useState('')
   const [fromCurrency, setFromCurrency] = useState('USD')
   const [toCurrency, setToCurrency] = useState('KRW')
@@ -57,7 +59,6 @@ export default function FxCalculator({
   }, [])
 
   useEffect(() => {
-    const dbRef = db
     if (!user || !dbRef) return
     const fetchFromFirestore = async () => {
       try {
@@ -77,7 +78,7 @@ export default function FxCalculator({
       }
     }
     fetchFromFirestore()
-  }, [user])
+  }, [user, dbRef])
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -113,7 +114,7 @@ export default function FxCalculator({
     }
 
     fetchRates()
-  }, [user])
+  }, [user, dbRef])
 
   const normalizedRates = useMemo(() => {
     if (!rates) return null
@@ -232,4 +233,8 @@ export default function FxCalculator({
       </div>
     </section>
   )
+}
+
+function isFirestore(value: unknown): value is Firestore {
+  return Boolean(value && typeof (value as Firestore).type === 'string')
 }
