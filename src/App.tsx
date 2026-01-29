@@ -45,8 +45,8 @@ export default function App() {
     <div className="app-shell">
       <header className="app-header">
         <div>
-          <h1>올인원 계산기 모음</h1>
-          <p>기록은 자동으로 저장되며 사용자별로 분리됩니다.</p>
+          <h1>LCNine 업무 계산기</h1>
+          <p>실무 계산을 빠르게 처리하고 기록합니다.</p>
         </div>
         <div className="user-info">
           <div className="user-email">

@@ -48,7 +48,7 @@
 
 .app-tabs button {
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .app-tabs button.active {
@@ -126,7 +126,7 @@
 }
 
 .basic-grid .operator {
-  background: #f4d7c9;
+  background: #e6e6e6;
 }
 
 .error-text {
@@ -143,7 +143,7 @@
 
 .subtabs button {
   border-radius: 12px;
-  background: #f0e7dc;
+  background: #f0f0f0;
 }
 
 .subtabs button.active {
@@ -163,7 +163,7 @@
   gap: 10px;
   padding: 14px;
   border-radius: 16px;
-  background: #fff7ee;
+  background: #f5f5f5;
 }
 
 .percent-inputs {
@@ -193,7 +193,7 @@
   padding: 6px 10px;
   font-size: 0.85rem;
   border-radius: 10px;
-  background: #fff1e6;
+  background: #f2f2f2;
 }
 
 .help {
@@ -204,7 +204,7 @@
   height: 18px;
   margin-left: 6px;
   border-radius: 50%;
-  background: #ecd2c3;
+  background: #e0e0e0;
   font-size: 0.8rem;
   position: relative;
 }
@@ -215,7 +215,7 @@
   bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
-  background: #2d221b;
+  background: #111111;
   color: white;
   font-size: 0.75rem;
   padding: 6px 10px;
@@ -233,7 +233,7 @@
 .placeholder-card {
   padding: 30px;
   border-radius: 16px;
-  background: #f0ece5;
+  background: #f0f0f0;
   text-align: center;
   font-weight: 600;
 }
@@ -247,7 +247,7 @@
 
 .date-result {
   padding: 14px;
-  background: #f8eee4;
+  background: #f2f2f2;
   border-radius: 12px;
 }
 
@@ -268,7 +268,7 @@
   margin-top: 8px;
   padding: 14px;
   border-radius: 12px;
-  background: #fff7ee;
+  background: #f5f5f5;
   display: grid;
   gap: 10px;
 }
@@ -292,7 +292,7 @@
   padding: 6px 10px;
   font-size: 0.85rem;
   border-radius: 10px;
-  background: #fff1e6;
+  background: #f2f2f2;
 }
 
 .date-quick-result {
@@ -308,7 +308,7 @@
 .unit-output,
 .fx-output {
   padding: 14px;
-  background: #f8eee4;
+  background: #f2f2f2;
   border-radius: 12px;
 }
 
@@ -350,7 +350,7 @@
 }
 
 .unit-reference-card {
-  background: #fff7ee;
+  background: #f5f5f5;
   border-radius: 14px;
   padding: 12px 14px;
 }
@@ -383,18 +383,18 @@
   padding: 6px 10px;
   font-size: 0.85rem;
   border-radius: 10px;
-  background: #fff1e6;
+  background: #f2f2f2;
 }
 
 .banner {
   padding: 10px 14px;
-  background: #ffe5d2;
+  background: #eeeeee;
   border-radius: 12px;
   margin-bottom: 12px;
 }
 
 .history-panel {
-  background: #fffdf9;
+  background: #ffffff;
   border-radius: 20px;
   border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 16px;
@@ -426,12 +426,12 @@
   gap: 12px;
   padding: 12px;
   border-radius: 14px;
-  background: #f6efe8;
+  background: #f2f2f2;
   cursor: pointer;
 }
 
 .history-item:focus-visible {
-  outline: 3px solid rgba(224, 122, 95, 0.45);
+  outline: 3px solid rgba(0, 0, 0, 0.35);
   outline-offset: 2px;
 }
 
@@ -468,7 +468,7 @@
 }
 
 .toast {
-  background: #2d221b;
+  background: #111111;
   color: white;
   padding: 10px 14px;
   border-radius: 12px;
@@ -485,7 +485,7 @@
 
 .auth-card {
   width: min(420px, 100%);
-  background: #fff;
+  background: #ffffff;
   padding: 28px;
   border-radius: 24px;
   box-shadow: var(--shadow);
