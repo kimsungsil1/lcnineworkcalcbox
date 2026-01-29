@@ -15,6 +15,22 @@ import { db } from '../../shared/firebase/firebase'
 import type { HistoryItem, HistoryWriteInput } from './types'
 
 const PAGE_SIZE = 50
+const LOCAL_KEY = 'localHistory'
+
+function loadLocalHistory() {
+  const raw = localStorage.getItem(LOCAL_KEY)
+  if (!raw) return []
+  try {
+    const parsed = JSON.parse(raw) as HistoryItem[]
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+function saveLocalHistory(items: HistoryItem[]) {
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(items.slice(0, 300)))
+}
 
 export function useHistory(user: User | null) {
   const [items, setItems] = useState<HistoryItem[]>([])
@@ -24,7 +40,13 @@ export function useHistory(user: User | null) {
 
   const load = useCallback(
     async (reset = false) => {
-      if (!user) return
+      if (!user) {
+        const local = loadLocalHistory()
+        setItems(reset ? local : local)
+        setHasMore(false)
+        setLastDoc(null)
+        return
+      }
       setLoading(true)
       try {
         const baseQuery = query(
@@ -64,7 +86,21 @@ export function useHistory(user: User | null) {
 
   const addHistory = useCallback(
     async (entry: HistoryWriteInput) => {
-      if (!user) return
+      if (!user) {
+        const localItems = loadLocalHistory()
+        const nextItem: HistoryItem = {
+          id: `local-${Date.now()}`,
+          type: entry.type,
+          title: entry.title,
+          input: entry.input,
+          output: entry.output,
+          createdAt: null,
+        }
+        const next = [nextItem, ...localItems]
+        saveLocalHistory(next)
+        setItems((prev) => [nextItem, ...prev])
+        return
+      }
       const docRef = await addDoc(collection(db, `users/${user.uid}/history`), {
         ...entry,
         createdAt: serverTimestamp(),
@@ -93,7 +129,8 @@ export function useHistory(user: User | null) {
     } else {
       setItems([])
       setLastDoc(null)
-      setHasMore(true)
+      setHasMore(false)
+      load(true)
     }
   }, [user, load])
 

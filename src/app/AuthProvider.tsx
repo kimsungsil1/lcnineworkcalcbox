@@ -7,7 +7,7 @@ import {
   signOut as firebaseSignOut,
 } from 'firebase/auth'
 import type { User } from 'firebase/auth'
-import { auth, googleProvider } from '../shared/firebase/firebase'
+import { auth, googleProvider, isFirebaseConfigured } from '../shared/firebase/firebase'
 
 type AuthContextValue = {
   user: User | null
@@ -25,11 +25,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!isFirebaseConfigured || !auth) {
+      setLoading(false)
+      return
+    }
+    const fallback = setTimeout(() => {
+      setLoading(false)
+    }, 2000)
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
       setUser(nextUser)
       setLoading(false)
+      clearTimeout(fallback)
     })
-    return () => unsubscribe()
+    return () => {
+      clearTimeout(fallback)
+      unsubscribe()
+    }
   }, [])
 
   const value = useMemo<AuthContextValue>(
@@ -37,19 +48,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       user,
       loading,
       signIn: async (email, password) => {
+        if (!auth) throw new Error('Firebase 설정이 필요합니다.')
         await signInWithEmailAndPassword(auth, email, password)
       },
       signUp: async (email, password) => {
+        if (!auth) throw new Error('Firebase 설정이 필요합니다.')
         await createUserWithEmailAndPassword(auth, email, password)
       },
       signInWithGoogle: async () => {
+        if (!auth || !googleProvider) throw new Error('Firebase 설정이 필요합니다.')
         await signInWithPopup(auth, googleProvider)
       },
       signOut: async () => {
+        if (!auth) return
         await firebaseSignOut(auth)
       },
     }),
-    [user],
+    [user, loading],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

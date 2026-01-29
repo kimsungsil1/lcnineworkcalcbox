@@ -1,3 +1,4 @@
+import type { FirebaseApp } from 'firebase/app'
 import { initializeApp } from 'firebase/app'
 import {
   GoogleAuthProvider,
@@ -5,6 +6,8 @@ import {
   getAuth,
   setPersistence,
 } from 'firebase/auth'
+import type { Auth } from 'firebase/auth'
+import type { Firestore } from 'firebase/firestore'
 import { enableIndexedDbPersistence, getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -16,17 +19,28 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-const app = initializeApp(firebaseConfig)
-const auth = getAuth(app)
-const db = getFirestore(app)
-const googleProvider = new GoogleAuthProvider()
+const isFirebaseConfigured = Object.values(firebaseConfig).every(
+  (value) => typeof value === 'string' && value.length > 0,
+)
 
-setPersistence(auth, browserLocalPersistence).catch(() => {
-  // Persistence can fail in some environments; auth still works with session persistence.
-})
+let app: FirebaseApp | null = null
+let auth: Auth | null = null
+let db: Firestore | null = null
+let googleProvider: GoogleAuthProvider | null = null
 
-enableIndexedDbPersistence(db).catch(() => {
-  // Ignore if persistence is unavailable (multiple tabs or unsupported browser).
-})
+if (isFirebaseConfigured) {
+  app = initializeApp(firebaseConfig)
+  auth = getAuth(app)
+  db = getFirestore(app)
+  googleProvider = new GoogleAuthProvider()
 
-export { app, auth, db, googleProvider }
+  setPersistence(auth, browserLocalPersistence).catch(() => {
+    // Persistence can fail in some environments; auth still works with session persistence.
+  })
+
+  enableIndexedDbPersistence(db).catch(() => {
+    // Ignore if persistence is unavailable (multiple tabs or unsupported browser).
+  })
+}
+
+export { app, auth, db, googleProvider, isFirebaseConfigured }

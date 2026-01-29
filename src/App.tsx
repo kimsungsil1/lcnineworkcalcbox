@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import './App.css'
 import { useAuth } from './app/AuthProvider'
-import AuthScreen from './app/AuthScreen'
 import BasicCalculator from './features/basic-calculator/BasicCalculator'
 import PercentCalculator from './features/percent-calculator/PercentCalculator'
 import DateCalculator from './features/date-calculator/DateCalculator'
@@ -30,10 +29,6 @@ export default function App() {
     return <div className="app-loading">불러오는 중…</div>
   }
 
-  if (!user) {
-    return <AuthScreen />
-  }
-
   const handleSelectHistory = (item: HistoryItem) => {
     setSelectedHistory(item)
     if (activeTab !== 'history') {
@@ -54,10 +49,16 @@ export default function App() {
           <p>기록은 자동으로 저장되며 사용자별로 분리됩니다.</p>
         </div>
         <div className="user-info">
-          <div className="user-email">{user.email ?? user.displayName ?? '로그인됨'}</div>
-          <button type="button" onClick={() => signOut()}>
-            로그아웃
-          </button>
+          <div className="user-email">
+            {user?.email ?? user?.displayName ?? '비회원 모드'}
+          </div>
+          {user ? (
+            <button type="button" onClick={() => signOut()}>
+              로그아웃
+            </button>
+          ) : (
+            <span className="user-hint">로그인 없이 사용 중</span>
+          )}
         </div>
       </header>
 

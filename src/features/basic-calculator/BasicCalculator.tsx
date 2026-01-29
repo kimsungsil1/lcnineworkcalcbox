@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { formatNumberWithCommas, numberToKoreanWords } from '../../shared/utils/number'
 import { safeEval } from '../../shared/utils/safeEval'
 import type { HistoryItem, HistoryWriteInput } from '../history/types'
@@ -23,6 +23,24 @@ const BUTTONS = [
   ')',
   '+',
 ]
+
+const ALLOWED_KEYS = new Set([
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '.',
+  '+',
+  '-',
+  '(',
+  ')',
+])
 
 type BasicCalculatorProps = {
   onAddHistory: (entry: HistoryWriteInput) => void
@@ -92,6 +110,57 @@ export default function BasicCalculator({
       setResult(null)
     }
   }
+
+  const keyMap = useMemo(
+    () => ({
+      '/': '÷',
+      '*': '×',
+    }),
+    [],
+  )
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null
+      const tag = target?.tagName?.toLowerCase()
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+        return
+      }
+
+      if (event.key === 'Enter') {
+        event.preventDefault()
+        handleCalculate()
+        return
+      }
+
+      if (event.key === 'Backspace') {
+        event.preventDefault()
+        handleBackspace()
+        return
+      }
+
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        handleClear()
+        return
+      }
+
+      const mapped = keyMap[event.key as keyof typeof keyMap]
+      if (mapped) {
+        event.preventDefault()
+        handleButton(mapped)
+        return
+      }
+
+      if (ALLOWED_KEYS.has(event.key)) {
+        event.preventDefault()
+        handleButton(event.key)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleCalculate, handleBackspace, handleClear, handleButton, keyMap])
 
   const handleCopy = async () => {
     if (result === null) return

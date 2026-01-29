@@ -34,6 +34,11 @@
   color: var(--ink);
 }
 
+.user-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .app-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -175,6 +180,20 @@
 .percent-actions {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.percent-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.percent-quick button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+  background: #fff1e6;
 }
 
 .help {
@@ -232,6 +251,60 @@
   border-radius: 12px;
 }
 
+.date-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.inline-button {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+}
+
+.date-quick {
+  margin-top: 8px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #fff7ee;
+  display: grid;
+  gap: 10px;
+}
+
+.date-quick-title {
+  font-weight: 600;
+}
+
+.date-quick-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.date-quick-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.date-quick-buttons button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+  background: #fff1e6;
+}
+
+.date-quick-result {
+  font-weight: 600;
+}
+
+.date-quick-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .unit-output,
 .fx-output {
   padding: 14px;
@@ -252,6 +325,43 @@
   margin-top: 6px;
 }
 
+.unit-grid .swap {
+  justify-self: start;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+}
+
+.unit-reference {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.unit-reference-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.unit-reference-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.unit-reference-card {
+  background: #fff7ee;
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.unit-reference-card ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .fx-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: end;
@@ -260,6 +370,20 @@
 .fx-grid .swap {
   height: 42px;
   align-self: center;
+}
+
+.fx-quick {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fx-quick button {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  border-radius: 10px;
+  background: #fff1e6;
 }
 
 .banner {
@@ -396,6 +520,14 @@
   margin: 16px 0;
   text-align: center;
   color: var(--muted);
+}
+
+.setup-list {
+  margin: 16px 0 0;
+  padding-left: 20px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
 }
 
 .auth-error {

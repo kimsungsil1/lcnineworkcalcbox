@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { addDays, differenceInCalendarDays, parseISO } from 'date-fns'
 import type { HistoryItem, HistoryWriteInput } from '../history/types'
+import { useToast } from '../../shared/ui/Toast'
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
 
@@ -10,6 +11,13 @@ function formatKoreanDate(date: Date) {
   const day = date.getDate()
   const weekday = WEEKDAYS[date.getDay()]
   return `${year}년 ${month}월 ${day}일(${weekday})`
+}
+
+function toLocalDateInputValue(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 type DateCalculatorProps = {
@@ -25,10 +33,12 @@ export default function DateCalculator({
   const [startDate, setStartDate] = useState('')
   const [deltaDays, setDeltaDays] = useState('')
   const [addResult, setAddResult] = useState('')
+  const [quickDays, setQuickDays] = useState('')
 
   const [diffStart, setDiffStart] = useState('')
   const [diffEnd, setDiffEnd] = useState('')
   const [diffResult, setDiffResult] = useState('')
+  const { push } = useToast()
 
   useEffect(() => {
     if (selectedHistory?.type === 'date') {
@@ -65,6 +75,33 @@ export default function DateCalculator({
       input: { mode: 'add', startDate, deltaDays, result: output },
       output: { summary: output, copyValue: output },
     })
+  }
+
+  useEffect(() => {
+    if (!startDate) {
+      setStartDate(toLocalDateInputValue(new Date()))
+    }
+  }, [startDate])
+
+  const quickResult = useMemo(() => {
+    if (!quickDays) return ''
+    const delta = Number(quickDays)
+    if (!Number.isFinite(delta)) return ''
+    const today = new Date()
+    const nextDate = addDays(today, delta)
+    const sign = delta >= 0 ? '+' : '-'
+    return `오늘 ${sign} ${Math.abs(delta)}일 = ${formatKoreanDate(nextDate)}`
+  }, [quickDays])
+
+  const handleQuickSave = () => {
+    if (!quickResult) return
+    onAddHistory({
+      type: 'date',
+      title: '오늘 기준 날짜 계산',
+      input: { mode: 'quick', deltaDays: quickDays, result: quickResult },
+      output: { summary: quickResult, copyValue: quickResult },
+    })
+    push('기록에 저장했어요')
   }
 
   const handleDiff = () => {
@@ -111,12 +148,21 @@ export default function DateCalculator({
         <div className="date-grid">
           <label>
             시작일
-            <input
-              type="date"
-              value={startDate}
-              onChange={(event) => setStartDate(event.target.value)}
-              aria-label="시작일"
-            />
+            <div className="date-input-row">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(event) => setStartDate(event.target.value)}
+                aria-label="시작일"
+              />
+              <button
+                type="button"
+                className="inline-button"
+                onClick={() => setStartDate(toLocalDateInputValue(new Date()))}
+              >
+                오늘
+              </button>
+            </div>
           </label>
           <label>
             증감 일수
@@ -133,6 +179,46 @@ export default function DateCalculator({
           <div className="date-result" aria-live="polite">
             {addResult}
           </div>
+            <div className="date-quick">
+              <div className="date-quick-title">오늘 기준 빠른 계산</div>
+              <div className="date-input-row">
+                <input
+                  type="number"
+                  value={quickDays}
+                  onChange={(event) => setQuickDays(event.target.value)}
+                  placeholder="예: 45"
+                  aria-label="오늘 기준 일수"
+                />
+                <span className="date-quick-label">일 후</span>
+              </div>
+              <div className="date-quick-buttons">
+                {[7, 30, 45, 60, 90].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setQuickDays(String(value))}
+                  >
+                    {value}일
+                  </button>
+                ))}
+              </div>
+              <div className="date-quick-result">{quickResult}</div>
+              <div className="date-quick-actions">
+                <button type="button" onClick={handleQuickSave}>
+                  기록 저장
+                </button>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!quickResult) return
+                    await navigator.clipboard.writeText(quickResult)
+                    push('복사됨')
+                  }}
+                >
+                  결과 복사
+                </button>
+              </div>
+            </div>
         </div>
       ) : (
         <div className="date-grid">

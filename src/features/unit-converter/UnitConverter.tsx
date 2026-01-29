@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { HistoryItem, HistoryWriteInput } from '../history/types'
 import { formatTrimmedNumber } from '../../shared/utils/number'
+import { useToast } from '../../shared/ui/Toast'
 
 type UnitDefinition = {
   label: string
@@ -100,6 +101,13 @@ const CATEGORIES: Record<string, Category> = {
   },
 }
 
+const QUICK_REFERENCES = [
+  { label: '무게', items: ['1 kg = 1000 g', '1 g = 1000 mg', '1 oz = 28.3495 g'] },
+  { label: '부피', items: ['1 L = 1000 mL', '1 m³ = 1000 L', '1 fl oz = 29.5735 mL'] },
+  { label: '길이', items: ['1 m = 100 cm', '1 cm = 10 mm', '1 inch = 2.54 cm'] },
+  { label: '면적', items: ['1 평 = 3.3058 m²', '1 m² = 0.3025 평'] },
+] as const
+
 type UnitConverterProps = {
   onAddHistory: (entry: HistoryWriteInput) => void
   selectedHistory?: HistoryItem | null
@@ -113,6 +121,7 @@ export default function UnitConverter({
   const [fromUnit, setFromUnit] = useState('m')
   const [toUnit, setToUnit] = useState('cm')
   const [inputValue, setInputValue] = useState('')
+  const { push } = useToast()
 
   useEffect(() => {
     if (selectedHistory?.type === 'unit') {
@@ -169,6 +178,12 @@ export default function UnitConverter({
         copyValue: outputValue,
       },
     })
+    push('기록에 저장했어요')
+  }
+
+  const handleSwap = () => {
+    setFromUnit(toUnit)
+    setToUnit(fromUnit)
   }
 
   const category = CATEGORIES[categoryKey]
@@ -223,6 +238,9 @@ export default function UnitConverter({
             ))}
           </select>
         </label>
+        <button type="button" className="swap" onClick={handleSwap}>
+          ↔ 단위 바꾸기
+        </button>
         <label>
           값
           <input
@@ -238,6 +256,31 @@ export default function UnitConverter({
         <button type="button" className="primary" onClick={handleSave}>
           기록 저장
         </button>
+        <button
+          type="button"
+          onClick={async () => {
+            if (!outputValue) return
+            await navigator.clipboard.writeText(outputValue)
+            push('복사됨')
+          }}
+        >
+          결과 복사
+        </button>
+      </div>
+      <div className="unit-reference">
+        <div className="unit-reference-title">빠른 단위 참고</div>
+        <div className="unit-reference-grid">
+          {QUICK_REFERENCES.map((group) => (
+            <div key={group.label} className="unit-reference-card">
+              <div className="unit-reference-label">{group.label}</div>
+              <ul>
+                {group.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

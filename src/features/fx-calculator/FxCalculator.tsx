@@ -4,6 +4,7 @@ import type { User } from 'firebase/auth'
 import type { HistoryItem, HistoryWriteInput } from '../history/types'
 import { db } from '../../shared/firebase/firebase'
 import { formatTrimmedNumber } from '../../shared/utils/number'
+import { useToast } from '../../shared/ui/Toast'
 
 const SUPPORTED = ['KRW', 'USD', 'CNY', 'JPY', 'EUR'] as const
 const CACHE_KEY = 'fxRatesCache'
@@ -31,6 +32,7 @@ export default function FxCalculator({
   const [rates, setRates] = useState<RatesCache | null>(null)
   const [status, setStatus] = useState<'loading' | 'fresh' | 'cache'>('loading')
   const [error, setError] = useState<string | null>(null)
+  const { push } = useToast()
 
   useEffect(() => {
     if (selectedHistory?.type === 'fx') {
@@ -145,6 +147,7 @@ export default function FxCalculator({
         copyValue: converted,
       },
     })
+    push('기록에 저장했어요')
   }
 
   return (
@@ -166,6 +169,17 @@ export default function FxCalculator({
             aria-label="환전 금액"
           />
         </label>
+        <div className="fx-quick">
+          {[1, 10, 100, 1000].map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setAmount(String(value))}
+            >
+              {value}
+            </button>
+          ))}
+        </div>
         <label>
           기준 통화
           <select
@@ -203,6 +217,16 @@ export default function FxCalculator({
         </div>
         <button type="button" className="primary" onClick={handleSave}>
           기록 저장
+        </button>
+        <button
+          type="button"
+          onClick={async () => {
+            if (!converted) return
+            await navigator.clipboard.writeText(converted)
+            push('복사됨')
+          }}
+        >
+          결과 복사
         </button>
       </div>
     </section>
