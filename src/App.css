@@ -268,6 +268,19 @@
   font-weight: 600;
 }
 
+.fee-table {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 500;
+}
+
 .fee-actions {
   display: flex;
   gap: 10px;
