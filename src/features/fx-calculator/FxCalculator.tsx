@@ -57,7 +57,7 @@ export default function FxCalculator({
   }, [])
 
   useEffect(() => {
-    if (!user) return
+    if (!user || !db) return
     const fetchFromFirestore = async () => {
       try {
         const snapshot = await getDoc(doc(db, 'appCache', 'fxRates'))
@@ -96,7 +96,7 @@ export default function FxCalculator({
         setRates(nextRates)
         setStatus('fresh')
         localStorage.setItem(CACHE_KEY, JSON.stringify(nextRates))
-        if (user) {
+        if (user && db) {
           await setDoc(doc(db, 'appCache', 'fxRates'), {
             base: nextRates.base,
             rates: nextRates.rates,

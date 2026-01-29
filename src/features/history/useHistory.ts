@@ -47,6 +47,12 @@ export function useHistory(user: User | null) {
         setLastDoc(null)
         return
       }
+      if (!db) {
+        setItems([])
+        setHasMore(false)
+        setLastDoc(null)
+        return
+      }
       setLoading(true)
       try {
         const baseQuery = query(
@@ -101,6 +107,7 @@ export function useHistory(user: User | null) {
         setItems((prev) => [nextItem, ...prev])
         return
       }
+      if (!db) return
       const docRef = await addDoc(collection(db, `users/${user.uid}/history`), {
         ...entry,
         createdAt: serverTimestamp(),
